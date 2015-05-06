@@ -26,13 +26,13 @@ By the time the hack day finished, I had only just started to begin this analysi
 
 The web audio API is surprisingly accessible. The combination of web audio and canvas can produce sophisticated audio visualisations; this hack barely scratched the surface.
 
-The algorithm to determine the tempo of the musical track would have to be significantly more sophisticated that what's implemented here. I suppose that there would have to be some way of identifying repeated rhythmic patterns, as well as some kind of filtering mechanism to identify the best patterns to use for timing analysis. This would have to dynamically adjust to the quality of different music tracks and the changing qualities of a track as it progresses.
+The algorithm to determine the tempo of the musical track would have to be significantly more sophisticated than what's implemented here. I suppose that there would have to be some way of identifying repeated rhythmic patterns, as well as some kind of filtering mechanism to identify the best patterns to use for timing analysis. This would have to dynamically adjust to the quality of different music tracks and the changing qualities of a track as it progresses.
 
 I imagine some music tracks would be too complex to be reliably analysed in this way. Similarly, some music tracks would probably not provide enough rhythmic information to be reliably analysed. Music of strong, simple, consistent rhythm with limited dynamics (such as a lot of pop music) would be the best candidate for this type of analysis.
 
 ### Fugly code caveat
 
-The code quality if terrible. It was written without any thought given to quality, consistentcy, structure, maintainability and so on. The algorithms and maths are also flawed, but taken in the spirit of a hack day, this is probably acceptable.
+The code quality is terrible. It was written without any thought given to quality, consistentcy, structure, maintainability and so on. The algorithms and maths are also flawed, but taken in the spirit of a hack day, this is probably acceptable.
 
 ## Dependencies
 * [grunt](http://gruntjs.com/)
