@@ -8,9 +8,7 @@ For the Scotland JS Web Audio Hack Day 2015, I decided to try my hand at real ti
 
 ## Demo
 
-[http://davidcole1977.github.io/web-audio-hackday/_app/](http://davidcole1977.github.io/web-audio-hackday/_app/) (will likely only work in recent versions of Chrome and Firefox)
-
-(Demo link is mysteriously not working. Grrr.)
+[http://davidcole1977.github.io/web-audio-hackday/](http://davidcole1977.github.io/web-audio-hackday/) (will likely only work in recent versions of Chrome and Firefox)
 
 ## Description
 
