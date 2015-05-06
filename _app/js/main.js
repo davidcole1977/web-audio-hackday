@@ -4,12 +4,30 @@
   function init() {
     var audioCtx = new window.AudioContext(),
         canvas = document.getElementById('analyserCanvas'),
-        canvasCtx = canvas.getContext('2d');
+        canvasCtx = canvas.getContext('2d'),
+        timeSlider = document.getElementById('changeTimeRange'),
+        WIDTH = 1024,
+        HEIGHT = 400,
+        resolution = 2, // max 16, min 1, power of 2, lower is better
+        divisions = 2048 / resolution / 2,
+        peakValue = 255,
+        thresholdRatio = 0.9,
+        peakDelay = 0.2,
+        peaksArray = [];
+
+    for (var i = 0; i < divisions; i++) {
+      peaksArray[i] = {
+        timesPeaked: [],
+        currentlyPeaking: false,
+        averageTimeBetweenPeaks: 0,
+        hasPeaked: false
+      };
+    }
 
     function loadSound () {
       var request = new XMLHttpRequest();
       
-      request.open('GET', '/ogg/Podington_Bear_-_Bambi.ogg', true);
+      request.open('GET', '/ogg/818[kb]101-bigfish-unstopable.ogg', true);
       request.responseType = 'arraybuffer';
 
       // Decode asynchronously
@@ -28,56 +46,73 @@
           bufferLength,
           dataArray;
 
-      analyser.fftSize = 1024;
-      bufferLength = analyser.fftSize;
+      analyser.fftSize = 2048 / resolution;
+      bufferLength = analyser.frequencyBinCount;
       dataArray = new Uint8Array(bufferLength);
       analyser.getByteFrequencyData(dataArray);
 
       source.buffer = buffer; 
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
-      source.start(0); 
+      source.loop = true;
+      source.start(audioCtx.currentTime); 
+
+      timeSlider.addEventListener('change', function (event) {
+        thresholdRatio = event.target.value;
+      });
 
       function draw() {
-        var drawVisual = requestAnimationFrame(draw),
-            WIDTH = 1024,
-            HEIGHT = 400;
-
-        analyser.getByteTimeDomainData(dataArray);
-
-        canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-        canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
-
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-
-        canvasCtx.beginPath();
-
-        var sliceWidth = WIDTH * 1.0 / bufferLength;
-        var x = 0;
+        canvasCtx.clearRect(0, 0, 1024, 400);
+        analyser.getByteFrequencyData(dataArray);
 
         for(var i = 0; i < bufferLength; i++) {
-     
-          var v = dataArray[i] / 128.0;
-          var y = v * HEIGHT/2;
+          canvasCtx.fillStyle = 'rgb(100, 100, 100)';
 
-          if(i === 0) {
-            canvasCtx.moveTo(x, y);
+          // if the value for this frequency band is above the threshold
+          // and it's not currently peaking, set it to peaking and record the peak start time
+          if (dataArray[i] > peakValue * thresholdRatio) {
+            canvasCtx.fillStyle = 'rgb(0, 255, 0)';
+
+            peaksArray[i].hasPeaked = true;
+
+            if (!peaksArray[i].currentlyPeaking) {
+              peaksArray[i].timesPeaked.push(audioCtx.currentTime);
+              peaksArray[i].currentlyPeaking = true;
+
+              // get average time between peaks
+              if (peaksArray[i].timesPeaked.length > 1) {
+                var timesPeakedArray = peaksArray[i].timesPeaked,
+                    firstTimePeaked = timesPeakedArray[0],
+                    lastTimePeaked = timesPeakedArray[timesPeakedArray.length - 1];
+
+                peaksArray[i].averageTimeBetweenPeaks = (lastTimePeaked - firstTimePeaked) / timesPeakedArray.length;
+              } 
+            }
+
           } else {
-            canvasCtx.lineTo(x, y);
+            if (typeof peaksArray[i] !== 'undefined' && peaksArray[i].currentlyPeaking) {
+              peaksArray[i].currentlyPeaking = false;
+            }
           }
 
-          x += sliceWidth;
+          canvasCtx.fillRect(i * resolution, 400 - dataArray[i], resolution, dataArray[i]);
         }
 
-        canvasCtx.lineTo(canvas.width, canvas.height/2);
-        canvasCtx.stroke();
+        requestAnimationFrame(draw);
       }
 
       draw();
     }
 
     loadSound();
+
+    setInterval(function () {
+      for (var i = 0; i < peaksArray.length; i++) {
+        if (peaksArray[i].hasPeaked) {
+          console.log(i, peaksArray[i].averageTimeBetweenPeaks);
+        }
+      }
+    }, 1000);
   }
 
   function onDOMReady () {
