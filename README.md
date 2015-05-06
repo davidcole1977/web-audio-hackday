@@ -32,7 +32,7 @@ I imagine some music tracks would be too complex to be reliably analysed in this
 
 ### Fugly code caveat
 
-The code quality is terrible. It was written without any thought given to quality, consistentcy, structure, maintainability and so on. The algorithms and maths are also flawed, but taken in the spirit of a hack day, this is probably acceptable.
+The code quality is terrible. It was written without any thought given to quality, consistency, structure, maintainability and so on. The algorithms and maths are also flawed, but taken in the spirit of a hack day, this is probably acceptable.
 
 ## Dependencies
 * [grunt](http://gruntjs.com/)
