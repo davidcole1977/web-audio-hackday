@@ -27,7 +27,7 @@
     function loadSound () {
       var request = new XMLHttpRequest();
       
-      request.open('GET', '/ogg/818[kb]101-bigfish-unstopable.ogg', true);
+      request.open('GET', 'ogg/818[kb]101-bigfish-unstopable.ogg', true);
       request.responseType = 'arraybuffer';
 
       // Decode asynchronously
